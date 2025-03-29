@@ -13,9 +13,12 @@ include("${CMAKE_CURRENT_LIST_DIR}/lib/cmake/protobuf/protobuf-module.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/lib/cmake/protobuf/protobuf-options.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/lib/cmake/protobuf/protobuf-targets.cmake")
 
-add_custom_target(Protobuf_Build_DLLs
-    ALL DEPENDS ${ALL_TARGETS}
-    COMMAND ${CMAKE_COMMAND} -DProtobuf_DLL_OUTPUT_DIRECTORY="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>" -P"${CMAKE_CURRENT_LIST_DIR}/copy_dlls.cmake")
+add_custom_target(
+    Copy_Protobuf_DLLs
+    COMMENT "Copying Protobuf DLLs"
+    COMMAND ${CMAKE_COMMAND}
+        -DCopyPath="${CMAKE_BINARY_DIR}/$<CONFIG>/bin"
+        -P "${CMAKE_CURRENT_LIST_DIR}/copy_dll.cmake")
 
 function(protoc_gen ProtoGenerate_ROOT_DIR ProtoGenerate_DLL_EXPORT_H ProtoGenerate_DLL_EXPORT_DECL)
     if(NOT "${ProtoGenerate_DLL_EXPORT_H}" STREQUAL "")

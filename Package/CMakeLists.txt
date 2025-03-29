@@ -4,7 +4,7 @@ project(Protobuf-Package)
 
 # Package Protobuf.zip
 configure_file("${CMAKE_CURRENT_LIST_DIR}/protobuf.cmake" "${CMAKE_BINARY_DIR}/protobuf-$ENV{PROTOBUF_VERSION}/protobuf/protobuf.cmake" COPYONLY)
-configure_file("${CMAKE_CURRENT_LIST_DIR}/copy_dlls.cmake" "${CMAKE_BINARY_DIR}/protobuf-$ENV{PROTOBUF_VERSION}/protobuf/copy_dlls.cmake" COPYONLY)
+configure_file("${CMAKE_CURRENT_LIST_DIR}/copy_dll.cmake" "${CMAKE_BINARY_DIR}/protobuf-$ENV{PROTOBUF_VERSION}/protobuf/copy_dll.cmake" COPYONLY)
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/protoc-$ENV{PROTOBUF_VERSION}.zip")
     file(DOWNLOAD https://github.com/protocolbuffers/protobuf/releases/download/v$ENV{PROTOBUF_VERSION}/protoc-$ENV{PROTOBUF_VERSION}-win64.zip "${CMAKE_BINARY_DIR}/protoc-$ENV{PROTOBUF_VERSION}.zip" SHOW_PROGRESS)
 endif()

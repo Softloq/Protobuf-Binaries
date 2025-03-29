@@ -1,5 +1,0 @@
-file(MAKE_DIRECTORY "${Protobuf_DLL_OUTPUT_DIRECTORY}")
-file(GLOB_RECURSE Protobuf_DLLs "${CMAKE_CURRENT_LIST_DIR}/bin/**.dll")
-foreach(DLL ${Protobuf_DLLs})
-    execute_process(COMMAND "${CMAKE_COMMAND}" -E copy "${DLL}" "${Protobuf_DLL_OUTPUT_DIRECTORY}")
-endforeach()
