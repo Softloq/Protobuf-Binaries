@@ -5,7 +5,12 @@ set(Protobuf_DIR "${CMAKE_CURRENT_LIST_DIR}/lib/cmake/protobuf")
 
 set(Protobuf_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include")
 set(Protobuf_LIB_DIR "${CMAKE_CURRENT_LIST_DIR}/lib")
-set(Protobuf_PROTOC_EXECUTABLE "${CMAKE_CURRENT_LIST_DIR}/bin/protoc.exe")
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    set(Protobuf_PROTOC_EXECUTABLE "${CMAKE_CURRENT_LIST_DIR}/bin/protoc")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set(Protobuf_PROTOC_EXECUTABLE "${CMAKE_CURRENT_LIST_DIR}/bin/protoc.exe")
+endif()
 set(PROTOC_EXEC "${Protobuf_PROTOC_EXECUTABLE}")
 
 include("${CMAKE_CURRENT_LIST_DIR}/lib/cmake/protobuf/protobuf-config.cmake")
@@ -13,17 +18,19 @@ include("${CMAKE_CURRENT_LIST_DIR}/lib/cmake/protobuf/protobuf-module.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/lib/cmake/protobuf/protobuf-options.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/lib/cmake/protobuf/protobuf-targets.cmake")
 
-add_custom_target(
-    Protobuf-DLL-Copy
-    DEPENDS "${CMAKE_CURRENT_LIST_DIR}/__run_always"
-    COMMENT "Protobuf DLL Copy"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/bin/abseil_dll.dll" "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/abseil_dll.dll"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/bin/libprotobuf-lite.dll" "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/libprotobuf-lite.dll"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/bin/libprotobuf.dll" "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/libprotobuf.dll"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/bin/libutf8_range.dll" "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/libutf8_range.dll"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/bin/libutf8_validity.dll" "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/libutf8_validity.dll"
-)
-add_dependencies(protobuf::libprotobuf Protobuf-DLL-Copy)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    add_custom_target(
+        Protobuf-DLL-Copy
+        DEPENDS "${CMAKE_CURRENT_LIST_DIR}/__run_always"
+        COMMENT "Protobuf DLL Copy"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/bin/abseil_dll.dll" "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/abseil_dll.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/bin/libprotobuf-lite.dll" "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/libprotobuf-lite.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/bin/libprotobuf.dll" "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/libprotobuf.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/bin/libutf8_range.dll" "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/libutf8_range.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_LIST_DIR}/bin/libutf8_validity.dll" "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/libutf8_validity.dll"
+    )
+    add_dependencies(protobuf::libprotobuf Protobuf-DLL-Copy)
+endif()
 
 function(protoc_gen ProtoGenerate_ROOT_DIR ProtoGenerate_DLL_EXPORT_H ProtoGenerate_DLL_EXPORT_DECL)
     if(NOT "${ProtoGenerate_DLL_EXPORT_H}" STREQUAL "")
